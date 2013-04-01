@@ -30,7 +30,7 @@
         <a id='a' href='#a'></a>
         <a id='b' href='#b'></a>
         <script>
-            var socket = io.connect('{abs}');
+            var socket = io.connect('localhost');
             function go(dir) {
                 return function(e) {
                     socket.emit('send', { dir: dir });

@@ -1,28 +1,50 @@
-var app = require('express')(),
-    server = require('http').createServer(app),
-    fs = require('fs'),
-    io = require('socket.io').listen(server);
+"use strict"
 
-server.listen(3001);
+var http = require('http');
+var fs = require('fs');
+var path = require('path');
 
-var happen = fs.readFileSync(__dirname + '/happen.js', 'utf8');
+var app = function (req, res) {
+  var reader = null;
 
-function host(req) {
-    return '//' + req.host + ':' + 3001;
+  if (req.url === '/') {
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    reader = fs.createReadStream('index.html');
+    reader.pipe(res);
+
+    reader.on('error', function(err) {
+      console.log('error: ', err);
+      res.end();
+    });
+    reader.on('end', function() {
+      res.end();
+    });
+  } else {
+    if (req.url=== '/anim.gif') {
+      res.writeHead(200, {'Content-Type': 'text/html'});
+      reader = fs.createReadStream(__dirname + path.sep + 'anim.gif');
+      reader.pipe(res);
+
+      reader.on('error', function(err) {
+        console.log('error: ', err);
+        res.end();
+      });
+      reader.on('end', function() {
+        res.end();
+      });
+    }
+  }
 }
 
-app.get('/', function(req, res) {
-  fs.readFile(__dirname + '/index.html', 'utf8', function(err, f) {
-      res.send(f.replace('{abs}', host(req)));
-  });
-});
-
-app.get('/anim.gif', function(req, res) {
-    res.sendfile(__dirname + '/anim.gif');
-});
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
 
 io.sockets.on('connection', function(socket) {
     socket.on('send', function(data) {
         socket.broadcast.emit('receive', data);
     });
 });
+
+server.listen(3001);
+
+console.log('Server running at http://127.0.0.1:3001');
