@@ -4,7 +4,7 @@ var http = require('http');
 var fs = require('fs');
 var path = require('path');
 
-var app = function (req, res) {
+var handler = function (req, res) {
   var reader = null;
 
   if (req.url === '/') {
@@ -36,7 +36,7 @@ var app = function (req, res) {
   }
 }
 
-var server = http.createServer(app);
+var server = http.createServer(handler);
 var io = require('socket.io').listen(server);
 
 io.sockets.on('connection', function(socket) {
