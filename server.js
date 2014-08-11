@@ -46,4 +46,4 @@ io.sockets.on('connection', function(socket) {
 
 server.listen(3001);
 
-console.log('Server running at http://' + ip + ':3001');
+console.log('Remote control running at http://' + ip + ':3001');
