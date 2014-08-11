@@ -33,7 +33,8 @@
 
         <script>
             // replace this with the laptop's ip
-            var socket = io.connect('http://localhost');
+            var socket = io.connect('{ip}');
+
             function go(dir) {
                 return function(e) {
                     socket.emit('send', { dir: dir });

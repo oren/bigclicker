@@ -4,19 +4,18 @@ var http = require('http');
 var fs = require('fs');
 var path = require('path');
 
+var ip = process.argv[2] || 'localhost';
+
 var handler = function (req, res) {
   var reader = null;
 
   if (req.url === '/') {
     res.writeHead(200, {'Content-Type': 'text/html'});
-    reader = fs.createReadStream('index.html');
-    reader.pipe(res);
 
-    reader.on('error', function(err) {
-      console.log('error: ', err);
-      res.end();
-    });
-    reader.on('end', function() {
+    fs.readFile('index.html',function (err, data) {
+      if (err) throw err;
+      data = data.toString().replace('{ip}', ip);
+      res.write(data);
       res.end();
     });
   } else {
@@ -47,4 +46,4 @@ io.sockets.on('connection', function(socket) {
 
 server.listen(3001);
 
-console.log('Server running at http://127.0.0.1:3001');
+console.log('Server running at http://' + ip + ':3001');
